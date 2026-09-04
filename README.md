@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SKYELAX - Montessori ERP & Learning Management System (LMS)
 
-## Getting Started
+A modern, scalable, role-based Montessori ERP and Learning Management System designed to streamline school operations, track child developmental progression, generate AI-driven insights, and maintain performance under low-connectivity environments using an offline-first caching layer.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Live Demo & Assessment Details
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* **Live Deployment URL:** `https://your-app-name.vercel.app`
+* **GitHub Repository:** `https://github.com/your-username/your-repo-name`
+* **Assessment Marking Target:** 250 Marks (UI/UX, Database, Core Features, AI & Offline-First, Unique Innovations, Documentation)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Key Features
 
-## Learn More
+### 1. Multi-Tenant Role-Based Access Control (RBAC)
+* Single-database multi-tenant architecture scoped by `schoolId` to ensure complete data isolation across school campuses.
+* Custom middleware and cookie-based authentication supporting three distinct roles:
+  * **Admin:** Campus management and global oversight.
+  * **Teacher:** Classroom management, attendance logging, observation tracking, and AI feedback generation.
+  * **Parent:** Student progress feed, multi-child switching, offline observation reading, and interactive AI developmental assistance.
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Montessori Curriculum & Progress Tracking
+* **Developmental Zone Mapping:** Structured logging under core Montessori learning areas: *Practical Life*, *Sensorial*, *Language*, *Mathematics*, and *Culture & Science*.
+* **Real-time Observation Feed:** Dynamic teacher observation logs served directly to linked parent accounts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Generative AI Insights Engine
+* **Observation Synthesis:** Converts brief teacher observation notes into formal, pedagogical Montessori developmental reports using Google Gemini API (`gemini-2.5-flash`).
+* **Parent Developmental Analytics:** Auto-generates structured summaries, core strengths, and recommended home activities based on student activity logs.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Context-Aware AI Assistant Widget (`<AIAssistant/>`)
+* Embedded floating assistant available across parent and teacher interfaces.
+* Provides real-time guidance on Montessori principles, lesson planning, and child progression.
 
-## Deploy on Vercel
+### 5. Offline-First Resilience
+* Client-side caching mechanism (`localStorage`) for student profiles, observation logs, and AI insights.
+* Native network status detection (`navigator.onLine`) rendering cached data seamlessly during connectivity drops accompanied by an **Offline Mode Warning Banner**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech Stack
+
+* **Framework:** Next.js 14+ (App Router, Server Actions, API Routes)
+* **Language:** JavaScript (ES6+)
+* **Styling & UI Components:** Tailwind CSS, Lucide React Icons
+* **Database & ORM:** MongoDB, Prisma ORM
+* **AI Framework:** Google Gen AI SDK (`@google/genai`)
+* **Deployment:** Vercel (Frontend & Serverless API Routes), MongoDB Atlas (Cloud Database)
+
+---
+
+## Database Architecture (Prisma Schema Overview)
+
+```prisma
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  PARENT
+}
+
+enum Category {
+  PRACTICAL_LIFE
+  SENSORIAL
+  LANGUAGE
+  MATHEMATICS
+  CULTURE
+}
+
+model School {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  code      String    @unique
+  users     User[]
+  students  Student[]
+  createdAt DateTime  @default(now())
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  password  String
+  name      String
+  role      Role
+  schoolId  String    @db.ObjectId
+  school    School    @relation(fields: [schoolId], references: [id])
+  students  Student[] @relation("ParentStudents")
+  createdAt DateTime  @default(now())
+}
+
+model Student {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  schoolId     String        @db.ObjectId
+  school       School        @relation(fields: [schoolId], references: [id])
+  parentId     String?       @db.ObjectId
+  parent       User?         @relation("ParentStudents", fields: [parentId], references: [id])
+  attendances  Attendance[]
+  observations Observation[]
+}
+
+model Attendance {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id])
+  date      DateTime @default(now())
+  status    String
+}
+
+model Observation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id])
+  category  Category
+  note      String
+  aiInsight String?
+  createdAt DateTime @default(now())
+}

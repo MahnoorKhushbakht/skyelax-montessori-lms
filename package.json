@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma skills sync || exit 0"
   },
+
   "dependencies": {
     "@google/genai": "^2.21.0",
     "@headlessui/react": "^2.2.10",

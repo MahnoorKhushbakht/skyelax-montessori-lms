@@ -1,0 +1,72 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  PARENT
+}
+
+enum Category {
+  PRACTICAL_LIFE
+  SENSORIAL
+  LANGUAGE
+  MATHEMATICS
+  CULTURE
+}
+
+model School {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  code      String    @unique
+  users     User[]
+  students  Student[]
+  createdAt DateTime  @default(now())
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  password  String
+  name      String
+  role      Role
+  schoolId  String    @db.ObjectId
+  school    School    @relation(fields: [schoolId], references: [id])
+  students  Student[] @relation("ParentStudents")
+  createdAt DateTime  @default(now())
+}
+
+model Student {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  schoolId     String        @db.ObjectId
+  school       School        @relation(fields: [schoolId], references: [id])
+  parentId     String?       @db.ObjectId
+  parent       User?         @relation("ParentStudents", fields: [parentId], references: [id])
+  attendances  Attendance[]
+  observations Observation[]
+}
+
+model Attendance {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id])
+  date      DateTime @default(now())
+  status    String   // "PRESENT", "ABSENT", "LATE"
+}
+
+model Observation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id])
+  category  Category
+  note      String
+  aiInsight String?
+  createdAt DateTime @default(now())
+}

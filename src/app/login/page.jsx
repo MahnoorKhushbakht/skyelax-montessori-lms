@@ -78,7 +78,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 transition-colors">
       <Card className="rounded-2xl p-8 max-w-md w-full space-y-6 relative">
         
-        {/* Dark/Light Toggle */}
+       
         <button
           type="button"
           onClick={toggleTheme}
@@ -87,7 +87,7 @@ export default function LoginPage() {
           {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
         </button>
 
-        {/* Header */}
+     
         <div className="text-center space-y-1">
           <div className="inline-flex p-3 bg-emerald-950/60 text-emerald-400 rounded-xl mb-2 border border-emerald-800/40">
             <BookOpen className="w-7 h-7" />
@@ -99,7 +99,7 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* Role Select */}
+
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">Select User Role</label>
             <select
@@ -113,7 +113,7 @@ export default function LoginPage() {
             </select>
           </div>
 
-          {/* Email */}
+     
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
             <Input
@@ -126,7 +126,7 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
+    
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
             <Input
@@ -152,7 +152,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Submit */}
+        
           <Button
             type="submit"
             disabled={submitting}

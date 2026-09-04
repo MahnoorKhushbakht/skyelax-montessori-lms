@@ -6,8 +6,8 @@ A modern, scalable, role-based Montessori ERP and Learning Management System des
 
 ## Live Demo & Assessment Details
 
-* **Live Deployment URL:** `https://your-app-name.vercel.app`
-* **GitHub Repository:** `https://github.com/your-username/your-repo-name`
+* **Live Deployment URL:** `https://skyelax-montessori-lms-rho.vercel.app`
+* **GitHub Repository:** `https://github.com/MahnoorKhushbakht/skyelax-montessori-lms.git`
 * **Assessment Marking Target:** 250 Marks (UI/UX, Database, Core Features, AI & Offline-First, Unique Innovations, Documentation)
 
 ---

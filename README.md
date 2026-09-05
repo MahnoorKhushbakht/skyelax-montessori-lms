@@ -30,7 +30,7 @@ A modern, scalable, role-based Montessori ERP and Learning Management System des
 * **Parent Developmental Analytics:** Auto-generates structured summaries, core strengths, and recommended home activities based on student activity logs.
 
 ### 4. Context-Aware AI Assistant Widget (`<AIAssistant/>`)
-* Embedded floating assistant available across parent and teacher interfaces.
+* Embedded floating assistant available on parent interfaces.
 * Provides real-time guidance on Montessori principles, lesson planning, and child progression.
 
 ### 5. Offline-First Resilience
